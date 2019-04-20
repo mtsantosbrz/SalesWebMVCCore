@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using SallesWebMvc.Models;
+using SallesWebMvc.Data;
 
 namespace SallesWebMvc
 {
@@ -38,14 +39,18 @@ namespace SallesWebMvc
 
             services.AddDbContext<SallesWebMvcContext>(options =>
                      options.UseMySql(Configuration.GetConnectionString("SallesWebMvcContext"), builder => builder.MigrationsAssembly("SallesWebMvc")));
+
+            services.AddScoped<SeedingService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env,SeedingService seedingService)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                //Execute service seed in mode Debug
+                seedingService.Seed();
             }
             else
             {
