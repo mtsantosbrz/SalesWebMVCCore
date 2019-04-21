@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using SallesWebMvc.Models;
 using SallesWebMvc.Data;
+using SallesWebMvc.Services;
 
 namespace SallesWebMvc
 {
@@ -41,6 +42,7 @@ namespace SallesWebMvc
                      options.UseMySql(Configuration.GetConnectionString("SallesWebMvcContext"), builder => builder.MigrationsAssembly("SallesWebMvc")));
 
             services.AddScoped<SeedingService>();
+            services.AddScoped<SellerService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
