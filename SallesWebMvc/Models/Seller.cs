@@ -24,6 +24,7 @@ namespace SallesWebMvc.Models
         public string Email { get; set; }
         public DateTime BirthDate { get; set; }
         public Double BaseSalary { get; set; }
+        public int DepartamentID { get; set; }
 
         public Departament Departament { get; set; }
         public ICollection<SalesRecord> Sales { get; set; } = new List<SalesRecord>();
