@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using SallesWebMvc.Models;
 using SallesWebMvc.Models.ViewModels;
 using SallesWebMvc.Services;
+using SallesWebMvc.Services.Exceptions;
 
 namespace SallesWebMvc.Controllers
 {
@@ -78,5 +79,48 @@ namespace SallesWebMvc.Controllers
 
             return View(resp);
         }
+
+        public IActionResult Edit(int?id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var resp = _sellerService.FindByID(id.Value);
+            if (resp == null)
+            {
+                return NotFound();
+            }
+
+            List<Departament> departaments = _departamentService.FindAll();
+            SellerFormViewModel viewModel = new SellerFormViewModel { Seller = resp, Departaments = departaments };
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id, Seller seller)
+        {
+            if(id!=seller.ID)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                _sellerService.Update(seller);
+                return RedirectToAction(nameof(Index));
+            }
+            catch(NotFoundException)
+            {
+                return NotFound();
+            }
+            catch(DbConcurrencyException)
+            {
+                return BadRequest();
+            }
+        }
+
     }
 }
