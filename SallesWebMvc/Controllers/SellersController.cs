@@ -62,5 +62,21 @@ namespace SallesWebMvc.Controllers
             _sellerService.Remove(id);
             return RedirectToAction(nameof(Index));
         }
+
+        public IActionResult Details(int?id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var resp = _sellerService.FindByID(id.Value);
+            if (resp == null)
+            {
+                return NotFound();
+            }
+
+            return View(resp);
+        }
     }
 }
