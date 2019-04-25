@@ -62,8 +62,7 @@ namespace SallesWebMvc.Services
 
         public async Task UpdateAsync(Departament departament)
         {
-            bool hasAny = await _context.Departament.AnyAsync(s => s.ID == departament.ID);
-            if (!hasAny)
+            if (!await DepartamentExists(departament.ID))
             {
                 throw new NotFoundException("ID not found!");
             }

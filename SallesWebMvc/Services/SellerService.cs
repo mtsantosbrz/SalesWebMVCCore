@@ -48,8 +48,8 @@ namespace SallesWebMvc.Services
 
         public async Task UpdateAsync(Seller seller)
         {
-            bool hasAny = await _context.Seller.AnyAsync(s => s.ID == seller.ID);
-            if (!hasAny)
+            
+            if (!await SellerExists(seller.ID))
             {
                 throw new NotFoundException("ID not found!");
             }
