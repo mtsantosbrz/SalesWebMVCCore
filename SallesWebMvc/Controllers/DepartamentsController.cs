@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using SallesWebMvc.Models;
 using SallesWebMvc.Models.ViewModels;
 using SallesWebMvc.Services;
+using SallesWebMvc.Services.Exceptions;
 
 namespace SallesWebMvc.Controllers
 {
@@ -125,8 +126,15 @@ namespace SallesWebMvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            await _departamentService.RemoveAsync(id);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _departamentService.RemoveAsync(id);
+                return RedirectToAction(nameof(Index));
+            }
+            catch(IntegrityException e)
+            {
+                return RedirectToAction(nameof(Error), new { message = e.Message });
+            }
         }
 
         private async Task<bool> DepartamentExists(int id)

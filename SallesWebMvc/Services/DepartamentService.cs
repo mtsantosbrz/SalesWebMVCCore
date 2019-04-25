@@ -44,9 +44,16 @@ namespace SallesWebMvc.Services
 
         public async Task RemoveAsync(int id)
         {
-            var departament = await FindByIDAsync(id);
-            _context.Remove(departament);
-            await _context.SaveChangesAsync();
+            try
+            {
+                var departament = await FindByIDAsync(id);
+                _context.Remove(departament);
+                await _context.SaveChangesAsync();
+            }
+            catch(DbUpdateException e)
+            {
+                throw new IntegrityException(e.Message);
+            }
         }
 
         #endregion
