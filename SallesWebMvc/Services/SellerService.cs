@@ -16,44 +16,50 @@ namespace SallesWebMvc.Services
             _context = context;
         }
 
-        public List<Seller> FindAll()
+        public async Task<List<Seller>> FindAllAsync()
         {
-            return _context.Seller.ToList();
+            return await _context.Seller.ToListAsync();
         }
 
-        public void Insert(Seller seller)
+        public async Task InsertAsync(Seller seller)
         {
             _context.Add(seller);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public Seller FindByID(int id)
+        public async Task<Seller> FindByIDAsync(int id)
         {
-            return _context.Seller.Include(obj=>obj.Departament).FirstOrDefault(x => x.ID == id);
+            return await _context.Seller.Include(obj=>obj.Departament).FirstOrDefaultAsync(x => x.ID == id);
         }
 
-        public void Remove(int id)
+        public async Task RemoveAsync(int id)
         {
-            var seller = FindByID(id);
+            var seller = await FindByIDAsync(id);
             _context.Remove(seller);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void Update(Seller seller)
+        public async Task UpdateAsync(Seller seller)
         {
-            if(!_context.Seller.Any(s=>s.ID == seller.ID))
+            bool hasAny = await _context.Seller.AnyAsync(s => s.ID == seller.ID);
+            if (!hasAny)
             {
                 throw new NotFoundException("ID not found!");
             }
             try
             {
                 _context.Update(seller);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             catch(DbUpdateConcurrencyException e)
             {
                 throw new DbConcurrencyException(e.Message);
             }
+        }
+
+        public async Task<bool> SellerExists(int id)
+        {
+            return await _context.Seller.AnyAsync(e => e.ID == id);
         }
     }
 }
