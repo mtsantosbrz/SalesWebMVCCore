@@ -48,6 +48,7 @@ namespace SallesWebMvc
             services.AddScoped<SeedingService>();
             services.AddScoped<SellerService>();
             services.AddScoped<DepartamentService>();
+            services.AddScoped<SalesRecordsService>();
 
             #endregion
         }
